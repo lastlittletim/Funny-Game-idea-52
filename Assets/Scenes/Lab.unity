@@ -555,7 +555,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441df5070d585334b9bfabcb29daaf4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 0
+  movementSpeed: 5
+  isDodge: 0
   floorDetector: {fileID: 0}
 --- !u!61 &1203258433
 BoxCollider2D:
