@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     //declare variables
     public float movementSpeed;
+    public bool isDodge;
 
     Rigidbody2D rb;
     public BoxCollider2D floorDetector;
