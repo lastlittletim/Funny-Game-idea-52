@@ -15,6 +15,8 @@ public class PlayerController2 : MonoBehaviour
     public bool isDashing;
     public bool canJump;
 
+    IEnumerator dashRoutine;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +52,11 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if (!isDashing && Input.GetKeyDown(KeyCode.LeftShift)) StartCoroutine(Dash());
+        if (!isDashing && Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            dashRoutine = Dash(); //create a new dash routine
+            StartCoroutine(dashRoutine); //start routine
+        };
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -58,26 +64,30 @@ public class PlayerController2 : MonoBehaviour
         if(collision.transform.CompareTag("Floor"))
         {
             canJump = true;
+            if(dashRoutine != null) //if in the middle of a dash
+            {
+                StopCoroutine(dashRoutine); //stop dash (or will clip through the floor (could be mechanic maybe?))
+                dashRoutine = null; //unassign
+                isDashing = false;
+            }
         }
     }
 
     IEnumerator Dash()
     {
         isDashing = true;
-        float dashTimer = dashTime;
+        float dashTimer = 0;
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
-        float gravityScale = rb.gravityScale; //keep old value of gravity scale
-        rb.gravityScale = 0; //set gravity to zero 
+        Vector3 startPos = transform.position; //get starting position 
 
-        while (dashTimer > 0)
+        while (dashTimer < dashTime)
         {
-            transform.position += dashDistance / dashTime * Time.deltaTime * inputVector.normalized; //move
-            dashTimer -= Time.deltaTime;
+            transform.position = dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
+            dashTimer += Time.deltaTime; //update timer 
             yield return null; //wait a frame
         }
 
         rb.velocity = inputVector.normalized * dashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
         isDashing = false;
-        rb.gravityScale = gravityScale; //reassign old value of gravity scale
     }
 }
