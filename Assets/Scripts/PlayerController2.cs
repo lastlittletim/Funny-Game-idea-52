@@ -10,6 +10,7 @@ public class PlayerController2 : MonoBehaviour
     public float dashDistance;
     public float dashTime;
     public float postDashVelocityMultiplier;
+    public float zoomin = 5;
 
     public bool allowInput;
     public bool isDashing;
@@ -45,7 +46,7 @@ public class PlayerController2 : MonoBehaviour
         {
             if (canJump) //if allowed to jump
             {
-                newVelocity.y = movementSpeed; //set y vel to movementSpeed (i.e. jump)
+                newVelocity.y = movementSpeed * 5; //set y vel to movementSpeed (i.e. jump)
                 canJump = false; //disable jump
             }
         }
@@ -77,17 +78,22 @@ public class PlayerController2 : MonoBehaviour
     {
         isDashing = true;
         float dashTimer = 0;
+ 
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
         Vector3 startPos = transform.position; //get starting position 
 
         while (dashTimer < dashTime)
         {
             transform.position = dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
+            Camera.main.orthographicSize = this.zoomin;
             dashTimer += Time.deltaTime; //update timer 
+            zoomin -= 0.1F;
             yield return null; //wait a frame
+           
         }
 
         rb.velocity = inputVector.normalized * dashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
         isDashing = false;
     }
+    
 }
