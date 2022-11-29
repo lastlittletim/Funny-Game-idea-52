@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlayerController2 : MonoBehaviour
 {
-    public Rigidbody2D rb; 
+    public Rigidbody2D rb;
+    public Camera cam;
     public float movementSpeed;
 
     public float dashDistance;
     public float dashTime;
     public float postDashVelocityMultiplier;
-    public float zoomin = 5;
 
     public bool allowInput;
     public bool isDashing;
@@ -81,19 +81,20 @@ public class PlayerController2 : MonoBehaviour
  
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
         Vector3 startPos = transform.position; //get starting position 
+        float originalCameraSize = cam.orthographicSize; //save original size
 
         while (dashTimer < dashTime)
         {
             transform.position = dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
-            Camera.main.orthographicSize = this.zoomin;
+            cam.orthographicSize = originalCameraSize * dashTimer / dashTime * 0.1f + originalCameraSize * 0.9f; //camera size shenenigans
             dashTimer += Time.deltaTime; //update timer 
-            zoomin -= 0.1F;
             yield return null; //wait a frame
            
         }
 
         rb.velocity = inputVector.normalized * dashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
         isDashing = false;
+        cam.orthographicSize = originalCameraSize; //reset camera size
     }
     
 }
