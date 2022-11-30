@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController2 : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public Collider2D mainCollider;
     public Camera cam;
     public float movementSpeed;
 
@@ -78,34 +79,34 @@ public class PlayerController2 : MonoBehaviour
     {
         isDashing = true;
         float dashTimer = 0;
-        float dashDistMult = 1;
+        float modifiedDashDistance = dashDistance;
  
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
         Vector3 startPos = transform.position; //get starting position 
         float originalCameraSize = cam.orthographicSize; //save original size
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, dashDistance);
-        Debug.Log(hit);
+        //prevent clipping
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, modifiedDashDistance);
         if(hit)
         {
-            Debug.Log("Early stop");
             Vector2 stopPos = hit.point;
-            dashDistMult = ((Vector2)startPos - stopPos).magnitude / dashDistance;
-            dashDistMult *= .9f;
+            modifiedDashDistance = ((Vector2)startPos - stopPos).magnitude;
+            modifiedDashDistance -= mainCollider.bounds.extents.magnitude;
         }
-
+        
+        //do the thing
         while (dashTimer < dashTime)
         {
-            transform.position = dashDistMult * dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
+            transform.position = modifiedDashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
             cam.orthographicSize = originalCameraSize * dashTimer / dashTime * 0.1f + originalCameraSize * 0.9f; //camera size shenenigans
             dashTimer += Time.deltaTime; //update timer 
             yield return null; //wait a frame
            
         }
 
-        rb.velocity = inputVector.normalized * dashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
-        isDashing = false;
+        rb.velocity = inputVector.normalized * modifiedDashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
         cam.orthographicSize = originalCameraSize; //reset camera size
+        isDashing = false;
     }
     
 }
