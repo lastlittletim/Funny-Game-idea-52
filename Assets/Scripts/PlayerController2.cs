@@ -62,15 +62,13 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if(timer > dashInterval)
+        if (timer < dashInterval) return; //end function here
+        if (!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if(!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                dashRoutine = Dash(); //Create a new dash routine
-                StartCoroutine(dashRoutine);
-            }
+            dashRoutine = Dash(); //Create a new dash routine
+            StartCoroutine(dashRoutine);
+            timer = 0;
         }
-
     }
 
     void OnCollisionEnter2D(Collision2D collision)
