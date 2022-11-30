@@ -10,6 +10,8 @@ public class PlayerController2 : MonoBehaviour
     public LayerMask terrainMask;
     float originalCameraSize;
     public float movementSpeed;
+    public float dashInterval = 4;
+    public float timer;
 
     public float dashDistance;
     public float dashTime;
@@ -33,6 +35,8 @@ public class PlayerController2 : MonoBehaviour
     void Update()
     {
         HandleInput();
+        timer += Time.deltaTime; //update timer
+       
     }
 
     void HandleInput()
@@ -58,11 +62,15 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if (!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.LeftShift))
+        if(timer > dashInterval)
         {
-            dashRoutine = Dash(); //create a new dash routine
-            StartCoroutine(dashRoutine); //start routine
-        };
+            if(!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                dashRoutine = Dash(); //Create a new dash routine
+                StartCoroutine(dashRoutine);
+            }
+        }
+
     }
 
     void OnCollisionEnter2D(Collision2D collision)
