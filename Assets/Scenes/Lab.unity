@@ -255,6 +255,9 @@ MonoBehaviour:
   rb: {fileID: 270620183}
   mainCollider: {fileID: 270620182}
   cam: {fileID: 519420031}
+  terrainMask:
+    serializedVersion: 2
+    m_Bits: 32768
   movementSpeed: 3
   dashDistance: 3
   dashTime: 0.1

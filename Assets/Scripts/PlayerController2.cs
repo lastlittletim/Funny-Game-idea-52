@@ -7,6 +7,7 @@ public class PlayerController2 : MonoBehaviour
     public Rigidbody2D rb;
     public Collider2D mainCollider;
     public Camera cam;
+    public LayerMask terrainMask;
     float originalCameraSize;
     public float movementSpeed;
 
@@ -100,7 +101,7 @@ public class PlayerController2 : MonoBehaviour
         //float originalCameraSize = cam.orthographicSize; //save original size
 
         //prevent clipping
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, modifiedDashDistance);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, modifiedDashDistance, terrainMask);
         if(hit)
         {
             Vector2 stopPos = hit.point;
