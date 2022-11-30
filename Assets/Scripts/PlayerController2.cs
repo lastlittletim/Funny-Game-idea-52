@@ -18,6 +18,7 @@ public class PlayerController2 : MonoBehaviour
     public float postDashVelocityMultiplier;
 
     public int mana;
+    public int health;
 
     bool allowInput = true;
     bool isDashing;
@@ -91,6 +92,7 @@ public class PlayerController2 : MonoBehaviour
         {
             Dodge();
         }
+        else --health;
     }
 
     void Dodge()
