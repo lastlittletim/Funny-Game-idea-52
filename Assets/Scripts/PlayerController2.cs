@@ -53,7 +53,7 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if (!isDashing && Input.GetKeyDown(KeyCode.LeftShift))
+        if (!isDashing && Input.GetKeyDown(KeyCode.X))
         {
             dashRoutine = Dash(); //create a new dash routine
             StartCoroutine(dashRoutine); //start routine
@@ -78,14 +78,25 @@ public class PlayerController2 : MonoBehaviour
     {
         isDashing = true;
         float dashTimer = 0;
+        float dashDistMult = 1;
  
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
         Vector3 startPos = transform.position; //get starting position 
         float originalCameraSize = cam.orthographicSize; //save original size
 
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, dashDistance);
+        Debug.Log(hit);
+        if(hit)
+        {
+            Debug.Log("Early stop");
+            Vector2 stopPos = hit.point;
+            dashDistMult = ((Vector2)startPos - stopPos).magnitude / dashDistance;
+            dashDistMult *= .9f;
+        }
+
         while (dashTimer < dashTime)
         {
-            transform.position = dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
+            transform.position = dashDistMult * dashDistance / dashTime * dashTimer * inputVector.normalized + startPos; //set position to direction of dash * distance * time passed as percentage of timer + starting position
             cam.orthographicSize = originalCameraSize * dashTimer / dashTime * 0.1f + originalCameraSize * 0.9f; //camera size shenenigans
             dashTimer += Time.deltaTime; //update timer 
             yield return null; //wait a frame
