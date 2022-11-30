@@ -55,7 +55,7 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if (!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.X))
+        if (!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.LeftShift))
         {
             dashRoutine = Dash(); //create a new dash routine
             StartCoroutine(dashRoutine); //start routine
@@ -74,6 +74,19 @@ public class PlayerController2 : MonoBehaviour
                 isDashing = false;
             }
         }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isDashing == true)
+        {
+            dodge();
+        }
+    }
+
+    void dodge()
+    {
+        Debug.Log("Fortnite");
     }
 
     IEnumerator Dash()
