@@ -15,9 +15,11 @@ public class PlayerController2 : MonoBehaviour
     public float dashTime;
     public float postDashVelocityMultiplier;
 
-    public bool allowInput;
-    public bool isDashing;
-    public bool canJump;
+    public int mana;
+
+    bool allowInput = true;
+    bool isDashing;
+    bool canJump;
 
     IEnumerator dashRoutine;
 
@@ -81,13 +83,14 @@ public class PlayerController2 : MonoBehaviour
     {
         if (isDashing == true)
         {
-            dodge();
+            Dodge();
         }
     }
 
-    void dodge()
+    void Dodge()
     {
         Debug.Log("Fortnite");
+        ++mana; //add one to mana count
     }
 
     IEnumerator Dash()
