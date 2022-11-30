@@ -7,6 +7,7 @@ public class PlayerController2 : MonoBehaviour
     public Rigidbody2D rb;
     public Collider2D mainCollider;
     public Camera cam;
+    float originalCameraSize;
     public float movementSpeed;
 
     public float dashDistance;
@@ -22,7 +23,7 @@ public class PlayerController2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        originalCameraSize = cam.orthographicSize;
     }
 
     // Update is called once per frame
@@ -83,7 +84,7 @@ public class PlayerController2 : MonoBehaviour
  
         Vector3 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); //get horizontal and vertical inputs, then map to a vector
         Vector3 startPos = transform.position; //get starting position 
-        float originalCameraSize = cam.orthographicSize; //save original size
+        //float originalCameraSize = cam.orthographicSize; //save original size
 
         //prevent clipping
         RaycastHit2D hit = Physics2D.Raycast(transform.position, inputVector.normalized, modifiedDashDistance);
@@ -107,6 +108,7 @@ public class PlayerController2 : MonoBehaviour
         rb.velocity = inputVector.normalized * modifiedDashDistance / dashTime * postDashVelocityMultiplier; //allow some of the velocity to carry through after
         cam.orthographicSize = originalCameraSize; //reset camera size
         isDashing = false;
+        dashRoutine = null;
     }
     
 }
