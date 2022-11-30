@@ -54,7 +54,7 @@ public class PlayerController2 : MonoBehaviour
 
         rb.velocity = newVelocity; //set velocity
 
-        if (!isDashing && Input.GetKeyDown(KeyCode.X))
+        if (!isDashing && dashRoutine == null && Input.GetKeyDown(KeyCode.X))
         {
             dashRoutine = Dash(); //create a new dash routine
             StartCoroutine(dashRoutine); //start routine
