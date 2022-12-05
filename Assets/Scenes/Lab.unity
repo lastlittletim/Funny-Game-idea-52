@@ -259,10 +259,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32768
   movementSpeed: 3
+  dashInterval: 4
   dashDistance: 3
   dashTime: 0.1
   postDashVelocityMultiplier: 0.25
   mana: 0
+  health: 0
+  debugSkillSlot: {fileID: 11400000, guid: acac29791c7ea6d43a6f87d68cb941a7, type: 2}
 --- !u!61 &270620182
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[CreateAssetMenu(fileName = "New Projectile Skill", menuName = "Skill/Projectile Skill")]
 public class ProjectileSkill : Skill
 {
     public List<ProjectileGroup> onUseProjectiles; //called on the frame that the skill is used
@@ -12,10 +13,9 @@ public class ProjectileSkill : Skill
     public override void OnUse(GameObject user, Vector2 shootDir)
     {
         base.OnUse(user, shootDir); //call original
-
-        shootDir = Vector2.right; //vector2.right placeholder, will replace eventually
-        foreach (ProjectileGroup projectileGroup in onUseEndProjectiles) //loop through all projectileGroup s
+        foreach (ProjectileGroup projectileGroup in onUseProjectiles) //loop through all projectileGroup s
         {
+            Debug.Log("calling shoot");
             Shoot(user, shootDir, projectileGroup);
         }
     }
@@ -38,8 +38,6 @@ public class ProjectileSkill : Skill
     public override void OnUseEnd(GameObject user, Vector2 shootDir)
     {
         base.OnUse(user, shootDir); //call original
-
-        shootDir = Vector2.right; //vector2.right placeholder, will replace eventually
         foreach (ProjectileGroup projectileGroup in onUseEndProjectiles) //loop through all projectileGroup s
         {
             Shoot(user, shootDir, projectileGroup);
@@ -52,13 +50,13 @@ public class ProjectileSkill : Skill
         for (int i = 0; i < projectileGroup.projectileCount; ++i)
         {
             GameObject projectileObj = Instantiate(projectileGroup.projectilePre, user.transform.position, Quaternion.identity); //create projectile, save to projectileObj
-            if (projectileGroup.projectileSpread <= 0)
+            if (projectileGroup.projectileSpread > 0)
             {
                 float shootAngle = Vector2.SignedAngle(Vector2.right, shootDir);
                 shootAngle += UnityEngine.Random.Range(-projectileGroup.projectileSpread, projectileGroup.projectileSpread); //apply random spread
                 shootDir = new Vector2(Mathf.Cos(shootAngle / 180 * Mathf.PI), Mathf.Sin(shootAngle / 180 * Mathf.PI));
             }
-            projectileObj.GetComponent<Rigidbody2D>().velocity = shootDir;
+            projectileObj.GetComponent<Rigidbody2D>().velocity = shootDir * UnityEngine.Random.Range(projectileGroup.projectileSpeedMin, projectileGroup.projectileSpeedMax);
         }
     }
 

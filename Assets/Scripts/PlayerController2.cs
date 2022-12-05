@@ -7,11 +7,12 @@ public class PlayerController2 : MonoBehaviour
     public Rigidbody2D rb;
     public Collider2D mainCollider;
     public Camera cam;
-    public LayerMask terrainMask;
     float originalCameraSize;
+    public LayerMask terrainMask;
+
     public float movementSpeed;
     public float dashInterval = 4;
-    public float timer;
+    float timer;
 
     public float dashDistance;
     public float dashTime;
@@ -19,6 +20,8 @@ public class PlayerController2 : MonoBehaviour
 
     public int mana;
     public int health;
+
+    public Skill debugSkillSlot;
 
     bool allowInput = true;
     bool isDashing;
@@ -35,12 +38,13 @@ public class PlayerController2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleInput();
+        HandleMovemetInput();
+        HandleSkillInput();
         timer += Time.deltaTime; //update timer
        
     }
 
-    void HandleInput()
+    void HandleMovemetInput()
     {
         if (!allowInput) return; //if not allowInput, end the function here
 
@@ -69,6 +73,27 @@ public class PlayerController2 : MonoBehaviour
             dashRoutine = Dash(); //Create a new dash routine
             StartCoroutine(dashRoutine);
             timer = 0;
+        }
+    }
+
+    void HandleSkillInput()
+    {
+        if (!allowInput) return; //see previous function
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            Debug.Log("yes");
+            debugSkillSlot.OnUse(gameObject, transform.right);
+        }
+
+        if (Input.GetKey(KeyCode.I))
+        {
+            debugSkillSlot.OnUseStay(gameObject, transform.right);
+        }
+
+        if (Input.GetKeyUp(KeyCode.I))
+        {
+            debugSkillSlot.OnUseEnd(gameObject, transform.right);
         }
     }
 
