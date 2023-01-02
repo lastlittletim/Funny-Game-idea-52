@@ -1,14 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class LevelGenerator : MonoBehaviour
 {
     List<List<bool>> level;
     public Vector2 size;
     public GameObject blockPre;
+    public GameObject player;
+
+    public float roomChance;
+    public int roomSize = 2;
     public float turnChance;
+    public int brushSize;
     public int steps;
+
+    public int hardLimit;
+
+    public Tilemap tilemap;
+    public RuleTile rTile;
 
     // Start is called before the first frame update
     void Start()
@@ -27,29 +38,75 @@ public class LevelGenerator : MonoBehaviour
 
     void GenerateLevel()
     {
+        int counter = 0;
         Vector2 drunkPos = new Vector2(Random.Range(0, (int)size.x - 1), Random.Range(0, (int)size.y - 1));
         Vector2 walkDirection = Vector2.right;
 
-        for (int i = 0; i < steps; i++)
+        int i = 0;
+        while (i < steps)
         {
+            counter++;
+            if (counter >= hardLimit) return; //emergency stop
+
             drunkPos += walkDirection;
             drunkPos = new Vector2(
-                Mathf.Clamp(drunkPos.x, 0, size.x -1),
+                Mathf.Clamp(drunkPos.x, 0, size.x - 1),
                 Mathf.Clamp(drunkPos.y, 0, size.y - 1)
                 );
-            if (level[(int)drunkPos.x][(int)drunkPos.y] == false) i--;
-            else level[(int)drunkPos.x][(int)drunkPos.y] = false;
 
-            if (Random.Range(0, 1f) <= turnChance)
+            //initial paint
+            for (int ix = -brushSize; ix < brushSize; ix++)
             {
-                int seed = Random.Range(0, 7);
-                walkDirection = new Vector2(
-                    (int)Mathf.Sin(Mathf.PI / 2 * seed),
-                    (int)Mathf.Cos(Mathf.PI / 2 * seed)
-                    );
+                for (int iy = -brushSize; iy < brushSize; iy++)
+                {
+                    int tempX = (int)Mathf.Clamp(drunkPos.x + ix, 0, size.x - 1);
+                    int tempY = (int)Mathf.Clamp(drunkPos.y + iy, 0, size.y - 1);
+                    if (level[tempY][tempX])
+                    {
+                        level[tempY][tempX] = false; i++;
+                    }
+                }
             }
 
-            Debug.Log(drunkPos);
+            if (Random.Range(0, 1f) <= turnChance) //turn chance
+            {
+                int seed = Random.Range(0, 4);
+                switch (seed)
+                {
+                    case 0:
+                        walkDirection = Vector2.down;
+                        break;
+                    case 1:
+                        walkDirection = Vector2.right;
+                        break;
+                    case 2:
+                        walkDirection = Vector2.up;
+                        break;
+                    case 3:
+                        walkDirection = Vector2.left;
+                        break;
+                }
+            }
+
+            //room
+            if (Random.Range(0, 1f) <= roomChance) //room chance
+            {
+                for (int ix = -roomSize; ix < roomSize; ix++)
+                {
+                    for (int iy = -roomSize; iy < roomSize; iy++)
+                    {
+                        int tempX = (int)Mathf.Clamp(drunkPos.x + ix, 0, size.x - 1);
+                        int tempY = (int)Mathf.Clamp(drunkPos.y + iy, 0, size.y - 1);
+                        if (level[tempY][tempX])
+                        {
+                            level[tempY][tempX] = false; i++;
+                        }
+                    }
+                }
+            }
+
+            Debug.Log(i);
+            //Debug.Log(drunkPos);
         }
     }
 
@@ -61,7 +118,7 @@ public class LevelGenerator : MonoBehaviour
             {
                 if (level[ix][iy])
                 {
-                    Instantiate(blockPre, new Vector2(ix,iy), Quaternion.identity);
+                    tilemap.SetTile(new Vector3Int(ix, iy, 0), rTile);
                 }
             }
         }
