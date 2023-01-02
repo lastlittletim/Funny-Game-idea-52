@@ -278,6 +278,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dfc235c9bdadb894a9fbcc3e6956d880, type: 3}
+--- !u!1 &790108369 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7214856385355120834, guid: dfc235c9bdadb894a9fbcc3e6956d880,
+    type: 3}
+  m_PrefabInstance: {fileID: 529217668}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &790108374 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7214856385355120847, guid: dfc235c9bdadb894a9fbcc3e6956d880,
@@ -330,6 +336,7 @@ MonoBehaviour:
   size: {x: 100, y: 100}
   blockPre: {fileID: 2672537061177758343, guid: c28d6f5ce8db52b4b9af77e934969249,
     type: 3}
+  player: {fileID: 790108369}
   roomChance: 0.01
   roomSize: 4
   turnChance: 0.5
@@ -350,9 +357,9 @@ GameObject:
   - component: {fileID: 9064789982920537681}
   - component: {fileID: 8726709939183289487}
   - component: {fileID: 2384136956887069727}
-  m_Layer: 31
+  m_Layer: 15
   m_Name: Level
-  m_TagString: Untagged
+  m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

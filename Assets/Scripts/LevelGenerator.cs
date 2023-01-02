@@ -41,11 +41,14 @@ public class LevelGenerator : MonoBehaviour
         int counter = 0;
         Vector2 drunkPos = new Vector2(Random.Range(0, (int)size.x - 1), Random.Range(0, (int)size.y - 1));
         Vector2 walkDirection = Vector2.right;
-
         int i = 0;
+
+        Vector2 tempVec = new Vector2(drunkPos.y, drunkPos.x);
+        player.transform.position = tempVec + Vector2.one / 2;
+
         while (i < steps)
         {
-            counter++;
+            counter++;  
             if (counter >= hardLimit) return; //emergency stop
 
             drunkPos += walkDirection;
